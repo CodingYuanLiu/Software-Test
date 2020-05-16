@@ -1,70 +1,116 @@
 package com.jgfanng.algo;
 
-import com.jgfanng.algo.BPlusTree;
-import com.jgfanng.algo.BPlusTree.RangePolicy;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Assert;
-import org.junit.Test;
+class BPlusTreeTest {
 
-public class BPlusTreeTest {
-	@Test
-	public void test() {
-		BPlusTree<Integer, String> bpt = new BPlusTree<Integer, String>(4);
-		bpt.insert(0, "a");
-		bpt.insert(1, "b");
-		bpt.insert(2, "c");
-		bpt.insert(3, "d");
-		bpt.insert(4, "e");
-		bpt.insert(5, "f");
-		bpt.insert(6, "g");
-		bpt.insert(7, "h");
-		bpt.insert(8, "i");
-		bpt.insert(9, "j");
-		bpt.delete(1);
-		bpt.delete(3);
-		bpt.delete(5);
-		bpt.delete(7);
-		bpt.delete(9);
-		Assert.assertEquals(bpt.search(0), "a");
-		Assert.assertEquals(bpt.search(1), null);
-		Assert.assertEquals(bpt.search(2), "c");
-		Assert.assertEquals(bpt.search(3), null);
-		Assert.assertEquals(bpt.search(4), "e");
-		Assert.assertEquals(bpt.search(5), null);
-		Assert.assertEquals(bpt.search(6), "g");
-		Assert.assertEquals(bpt.search(7), null);
-		Assert.assertEquals(bpt.search(8), "i");
-		Assert.assertEquals(bpt.search(9), null);
-	}
+    BPlusTree<String, String> instance;
 
-	@Test
-	public void testSearchRange() {
-		BPlusTree<Integer, String> bpt = new BPlusTree<Integer, String>(4);
-		bpt.insert(0, "a");
-		bpt.insert(1, "b");
-		bpt.insert(2, "c");
-		bpt.insert(3, "d");
-		bpt.insert(4, "e");
-		bpt.insert(5, "f");
-		bpt.insert(6, "g");
-		bpt.insert(7, "h");
-		bpt.insert(8, "i");
-		bpt.insert(9, "j");
-		Assert.assertArrayEquals(
-				bpt.searchRange(3, RangePolicy.EXCLUSIVE, 7,
-						RangePolicy.EXCLUSIVE).toArray(), new String[] { "e",
-						"f", "g" });
-		Assert.assertArrayEquals(
-				bpt.searchRange(3, RangePolicy.INCLUSIVE, 7,
-						RangePolicy.EXCLUSIVE).toArray(), new String[] { "d",
-						"e", "f", "g" });
-		Assert.assertArrayEquals(
-				bpt.searchRange(3, RangePolicy.EXCLUSIVE, 7,
-						RangePolicy.INCLUSIVE).toArray(), new String[] { "e",
-						"f", "g", "h" });
-		Assert.assertArrayEquals(
-				bpt.searchRange(3, RangePolicy.INCLUSIVE, 7,
-						RangePolicy.INCLUSIVE).toArray(), new String[] { "d",
-						"e", "f", "g", "h" });
-	}
+    @Test
+    void testDefaultConstructor() {
+        instance = new BPlusTree<>();
+    }
+
+    @Test
+    void search() {
+        instance = new BPlusTree<>(4);
+        instance.insert("1", "1");
+        instance.insert("2", "2");
+        instance.insert("3", "3");
+        Assertions.assertEquals("1", instance.search("1")); // p1
+        // branch (2 level)
+        instance.insert("4", "4");
+        Assertions.assertEquals("4", instance.search("4")); // p2
+        instance.insert("5", "5");
+        instance.insert("6", "6");
+        instance.insert("7", "7");
+        instance.insert("8", "8");
+        instance.insert("9", "9");
+        // branch (3 level)
+        instance.insert("a", "a");
+        Assertions.assertEquals("a", instance.search("a")); // p3
+    }
+
+    @Test
+    void searchRange() {
+        instance = new BPlusTree<>(4);
+        Assertions.assertArrayEquals(new String[] {},instance.searchRange("1", BPlusTree.RangePolicy.EXCLUSIVE, "1", BPlusTree.RangePolicy.EXCLUSIVE).toArray());
+        instance.insert("1", "1");
+        instance.insert("1", "1");
+        Assertions.assertArrayEquals(new String[] {}, instance.searchRange("1", BPlusTree.RangePolicy.INCLUSIVE, "1", BPlusTree.RangePolicy.EXCLUSIVE).toArray());
+        Assertions.assertArrayEquals(new String[] {"1"}, instance.searchRange("1", BPlusTree.RangePolicy.INCLUSIVE, "1", BPlusTree.RangePolicy.INCLUSIVE).toArray());
+        instance.insert("2", "2");
+        instance.insert("3", "3");
+        Assertions.assertArrayEquals(new String[] {"2", "3"}, instance.searchRange("1", BPlusTree.RangePolicy.EXCLUSIVE, "3", BPlusTree.RangePolicy.INCLUSIVE).toArray()); // p1
+        // branch (2 level)
+        instance.insert("4", "4");
+        Assertions.assertArrayEquals(new String[] {"2", "3", "4"}, instance.searchRange("1", BPlusTree.RangePolicy.EXCLUSIVE, "4", BPlusTree.RangePolicy.INCLUSIVE).toArray()); // p2
+        instance.insert("5", "5");
+        instance.insert("6", "6");
+        instance.insert("7", "7");
+        instance.insert("8", "8");
+        instance.insert("9", "9");
+        // branch (3 level)
+        instance.insert("a", "a");
+        Assertions.assertArrayEquals(new String[] {"2", "3", "4", "5", "6"}, instance.searchRange("1", BPlusTree.RangePolicy.EXCLUSIVE, "7", BPlusTree.RangePolicy.EXCLUSIVE).toArray()); // p3
+    }
+
+    @Test
+    void insert() {
+        instance = new BPlusTree<>(4);
+        instance.insert("1", "1");
+        instance.insert("1", "1");
+        instance.insert("2", "2");
+        instance.insert("3", "3");
+        // branch (2 level)
+        instance.insert("4", "4");
+        instance.insert("5", "5");
+        instance.insert("6", "6");
+        instance.insert("7", "7");
+        instance.insert("8", "8");
+        instance.insert("9", "9");
+        // branch (3 level)
+        instance.insert("a", "a");
+        Assertions.assertEquals(10, instance.searchRange("1", BPlusTree.RangePolicy.INCLUSIVE, "a", BPlusTree.RangePolicy.INCLUSIVE).size());
+    }
+
+    @Test
+    void delete() {
+        instance = new BPlusTree<>(4);
+        for (char c = 'a'; c < 'a' + 27; c++) {
+            instance.insert(String.valueOf(c), String.valueOf(c));
+        }
+        Assertions.assertEquals(27, instance.searchRange("a", BPlusTree.RangePolicy.INCLUSIVE, "{", BPlusTree.RangePolicy.INCLUSIVE).size());
+        for (char c = 'a'; c < 'a' + 20; c++) {
+            instance.delete(String.valueOf(c));
+        }
+        Assertions.assertEquals(7, instance.searchRange("a", BPlusTree.RangePolicy.INCLUSIVE, "{", BPlusTree.RangePolicy.INCLUSIVE).size());
+        for (char c = 'a' + 20; c < 'a' + 27; c++) {
+            instance.delete(String.valueOf(c));
+        }
+        Assertions.assertEquals(0, instance.searchRange("a", BPlusTree.RangePolicy.INCLUSIVE, "{", BPlusTree.RangePolicy.INCLUSIVE).size());
+
+    }
+
+    @Test
+    void testToString() {
+        instance = new BPlusTree<>(4);
+        Assertions.assertEquals("{[]}\n", instance.toString());
+        instance.insert("1", "1");
+        instance.insert("2", "2");
+        instance.insert("3", "3");
+        // branch (2 level)
+        instance.insert("4", "4");
+        instance.insert("5", "5");
+        instance.insert("6", "6");
+        instance.insert("7", "7");
+        instance.insert("8", "8");
+        instance.insert("9", "9");
+        Assertions.assertEquals("{[3, 5, 7]}\n" + "{[1, 2], [3, 4], [5, 6], [7, 8, 9]}\n", instance.toString());
+        // branch (3 level)
+        instance.insert("a", "a");
+        Assertions.assertEquals("{[7]}\n" + "{[3, 5], [9]}\n" + "{[1, 2], [3, 4], [5, 6]}, {[7, 8], [9, a]}\n", instance.toString());
+    }
 }
