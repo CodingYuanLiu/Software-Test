@@ -2,5 +2,9 @@
 .project
 target
 
+# idea-related files
+*.iml
+.idea
+
 # zhaoshenglong
 zhaoshenglong
