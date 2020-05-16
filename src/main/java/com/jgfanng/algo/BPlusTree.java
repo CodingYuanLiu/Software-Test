@@ -95,6 +95,14 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 	 */
 	public void insert(K key, V value) {
 		root.insertValue(key, value);
+		if (root.isOverflow()) {
+			Node sibling = root.split();
+			InternalNode newRoot = new InternalNode();
+			newRoot.keys.add(sibling.getFirstLeafKey());
+			newRoot.children.add(root);
+			newRoot.children.add(sibling);
+			root = newRoot;
+		}
 	}
 
 	/**
@@ -105,6 +113,15 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 	 */
 	public void delete(K key) {
 		root.deleteValue(key);
+		Node left;
+		Node rootLeftSibling;
+		Node child;
+		if (root instanceof BPlusTree.InternalNode && root.keyNumber() == 0){
+			rootLeftSibling = ((InternalNode) root).getChildLeftSibling(key);
+			child = ((InternalNode) root).getChild(key);
+			left = rootLeftSibling != null ? rootLeftSibling : child;
+			root = left;
+		}
 	}
 
 	public String toString() {
@@ -197,8 +214,6 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 					Node sibling = left.split();
 					insertChild(sibling.getFirstLeafKey(), sibling);
 				}
-				if (root.keyNumber() == 0)
-					root = left;
 			}
 		}
 
@@ -209,14 +224,6 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 			if (child.isOverflow()) {
 				Node sibling = child.split();
 				insertChild(sibling.getFirstLeafKey(), sibling);
-			}
-			if (root.isOverflow()) {
-				Node sibling = split();
-				InternalNode newRoot = new InternalNode();
-				newRoot.keys.add(sibling.getFirstLeafKey());
-				newRoot.children.add(this);
-				newRoot.children.add(sibling);
-				root = newRoot;
 			}
 		}
 
@@ -341,14 +348,6 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 			} else {
 				keys.add(valueIndex, key);
 				values.add(valueIndex, value);
-			}
-			if (root.isOverflow()) {
-				Node sibling = split();
-				InternalNode newRoot = new InternalNode();
-				newRoot.keys.add(sibling.getFirstLeafKey());
-				newRoot.children.add(this);
-				newRoot.children.add(sibling);
-				root = newRoot;
 			}
 		}
 
