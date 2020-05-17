@@ -199,7 +199,7 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 		}
 
 		@Override
-		void deleteValue(K key) {
+			void deleteValue(K key) {
 			Node child = getChild(key);
 			child.deleteValue(key);
 			if (child.isUnderflow()) {

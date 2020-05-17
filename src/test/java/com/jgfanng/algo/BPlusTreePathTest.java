@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import com.jgfanng.algo.BPlusTree.RangePolicy;
 
-public class BPlusTreeTest {
+public class BPlusTreePathTest {
+	// 两个综合性测试，没什么实际意义。主要用来自己检查B+树的实现效果的
 	@Test
 	public void test() {
 		BPlusTree<Integer, String> bpt = new BPlusTree<Integer, String>(4);
