@@ -28,7 +28,7 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 	/**
 	 * The root node of the B+ tree.
 	 */
-	private Node root;
+	public Node root;
 
 	public BPlusTree() {
 		this(DEFAULT_BRANCHING_FACTOR);
@@ -154,7 +154,7 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 		return sb.toString();
 	}
 
-	private abstract class Node {
+	public abstract class Node {
 		List<K> keys;
 
 		int keyNumber() {
@@ -185,7 +185,7 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 		}
 	}
 
-	private class InternalNode extends Node {
+	public class InternalNode extends Node {
 		List<Node> children;
 
 		InternalNode() {
@@ -315,7 +315,7 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 		}
 	}
 
-	private class LeafNode extends Node {
+	public class LeafNode extends Node {
 		List<V> values;
 		LeafNode next;
 
