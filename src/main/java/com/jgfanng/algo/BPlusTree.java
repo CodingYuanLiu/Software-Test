@@ -50,10 +50,10 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 	 * A return value of {@code null} does not <i>necessarily</i> indicate that
 	 * the tree contains no association for the key; it's also possible that the
 	 * tree explicitly associates the key to {@code null}.
-	 * 
+	 *
 	 * @param key
 	 *            the key whose associated value is to be returned
-	 * 
+	 *
 	 * @return the value to which the specified key is associated, or
 	 *         {@code null} if this tree contains no association for the key
 	 */
@@ -64,7 +64,7 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 	/**
 	 * Returns the values associated with the keys specified by the range:
 	 * {@code key1} and {@code key2}.
-	 * 
+	 *
 	 * @param key1
 	 *            the start key of the range
 	 * @param policy1
@@ -87,7 +87,7 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 	 * Associates the specified value with the specified key in this tree. If
 	 * the tree previously contained a association for the key, the old value is
 	 * replaced.
-	 * 
+	 *
 	 * @param key
 	 *            the key with which the specified value is to be associated
 	 * @param value
@@ -107,7 +107,7 @@ public class BPlusTree<K extends Comparable<? super K>, V> {
 
 	/**
 	 * Removes the association for the specified key from this tree if present.
-	 * 
+	 *
 	 * @param key
 	 *            the key whose association is to be removed from the tree
 	 */
