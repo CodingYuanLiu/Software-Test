@@ -547,6 +547,385 @@ public class BPlusTreeTest {
 		// 内部节点split时，会删除提上来的key
 		Assert.assertEquals(tree.toString(), "{[7]}\n{[3, 5], [9]}\n{[1, 2], [3, 4], [5, 6]}, {[7, 8], [9, 10]}\n");
 	}
+	
+	@Test
+	public void testInternalNodeGetValueTest() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
 
+		inode.insertChild(1, lnode);
+		inode.insertValue(1, "b");
+		Assert.assertEquals(inode.getValue(1), "b");
+	}
+
+	@Test
+	public void testInternalNodeGetValueTest2() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+
+		inode.insertChild(1, lnode);
+		inode.insertValue(1, "b");
+		inode.insertValue(2, "c");
+		Assert.assertEquals(inode.getValue(2), "c");
+	}
+
+	@Test
+	public void testInternalNodeDeleteValue() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode1 = new BPlusTree<Integer, String>(4).new LeafNode();
+		BPlusTree.LeafNode lnode2 = new BPlusTree<Integer, String>(4).new LeafNode();
+
+		lnode1.insertValue(1, "a");
+		lnode1.insertValue(2, "b");
+		lnode1.insertValue(3, "c");
+		lnode2.insertValue(4, "d");
+		lnode2.insertValue(5, "e");
+		lnode2.insertValue(6, "f");
+
+		inode.children.add(lnode1);
+		inode.insertChild(4, lnode2);
+
+
+		Assert.assertEquals(inode.children.size(), 2);
+		inode.deleteValue(6);
+		Assert.assertEquals(inode.children.size(), 2);
+		Assert.assertNotNull(inode.getChild(4));
+	}
+
+	@Test
+	public void testInternalNodeDeleteValue2() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode1 = new BPlusTree<Integer, String>(4).new LeafNode();
+		BPlusTree.LeafNode lnode2 = new BPlusTree<Integer, String>(4).new LeafNode();
+
+		lnode1.insertValue(1, "a");
+		lnode1.insertValue(2, "b");
+		lnode2.insertValue(5, "e");
+		lnode2.insertValue(6, "f");
+
+		inode.children.add(lnode1);
+		inode.insertChild(5, lnode2);
+
+		Assert.assertEquals(inode.children.size(), 2);
+		inode.deleteValue(6);
+		Assert.assertEquals(inode.children.size(), 1);
+	}
+
+	@Test
+	public void testInternalNodeDeleteValue3() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode1 = new BPlusTree<Integer, String>(4).new LeafNode();
+		BPlusTree.LeafNode lnode2 = new BPlusTree<Integer, String>(4).new LeafNode();
+
+		lnode1.insertValue(1, "a");
+		lnode1.insertValue(2, "b");
+		lnode1.insertValue(3, "c");
+		lnode1.insertValue(4, "d");
+		lnode2.insertValue(5, "e");
+		lnode2.insertValue(6, "f");
+
+		inode.children.add(lnode1);
+		inode.insertChild(5, lnode2);
+		Assert.assertEquals(inode.children.size(), 2);
+		inode.deleteValue(6);
+		Assert.assertEquals(inode.children.size(), 2);
+		Assert.assertNotNull(inode.getChild(4));
+	}
+
+	@Test
+	public void testInternalNodeInsertValue() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+
+		inode.children.add(lnode);
+		inode.insertValue(1, "a");
+		Assert.assertEquals(inode.getValue(1), "a");
+		Assert.assertEquals(inode.children.size(), 1);
+	}
+
+	@Test
+	public void testInternalNodeInsertValue2() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+
+		inode.children.add(lnode);
+		inode.insertValue(1, "a");
+		inode.insertValue(2, "b");
+		inode.insertValue(3, "c");
+		Assert.assertEquals(inode.children.size(), 1);
+		inode.insertValue(4, "d");
+		Assert.assertEquals(inode.children.size(), 2);
+	}
+
+	@Test
+	public void testInternalNodeGetFirstLeafKey() {
+		BPlusTree.InternalNode inode1 = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+
+		lnode.keys.add(0);
+		inode1.children.add(lnode);
+
+		Assert.assertEquals(inode1.getFirstLeafKey(), 0);
+	}
+
+	@Test
+	public void testInternalNodeGetFirstLeafKey2() {
+		BPlusTree.InternalNode inode1 = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.InternalNode inode2 = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+
+		lnode.keys.add(0);
+		inode2.children.add(lnode);
+		inode1.children.add(inode2);
+
+		Assert.assertEquals(inode1.getFirstLeafKey(), 0);
+	}
+
+	@Test
+	public void testInternalNodeGetRange() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+		inode.insertChild(1, lnode);
+
+		inode.insertValue(1, "b");
+		inode.insertValue(2, "c");
+		inode.insertValue(3, "d");
+		inode.insertValue(4, "e");
+
+		List<String> out = new ArrayList<String>();
+		out.add("d");
+		Assert.assertEquals(inode.getRange(2, RangePolicy.EXCLUSIVE, 4, RangePolicy.EXCLUSIVE), out);
+	}
+
+	@Test
+	public void testInternalNodeGetRange2() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+		inode.insertChild(1, lnode);
+
+		inode.insertValue(1, "b");
+		inode.insertValue(2, "c");
+		inode.insertValue(3, "d");
+		inode.insertValue(4, "e");
+
+		List<String> out = new ArrayList<String>();
+		out.add("c");
+		out.add("d");
+		Assert.assertEquals(inode.getRange(2, RangePolicy.INCLUSIVE, 4, RangePolicy.EXCLUSIVE), out);
+	}
+
+	@Test
+	public void testInternalNodeGetRange3() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+		inode.insertChild(1, lnode);
+
+		inode.insertValue(1, "b");
+		inode.insertValue(2, "c");
+		inode.insertValue(3, "d");
+		inode.insertValue(4, "e");
+
+		List<String> out = new ArrayList<String>();
+		out.add("c");
+		out.add("d");
+		out.add("e");
+		Assert.assertEquals(inode.getRange(2, RangePolicy.INCLUSIVE, 4, RangePolicy.INCLUSIVE), out);
+	}
+
+	@Test
+	public void testInternalNodeMerge() {
+		BPlusTree.InternalNode inode1 = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.InternalNode inode2 = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode1.children.add(lnode);
+		inode2.children.add(lnode);
+		lnode.keys.add(0);
+
+		inode1.insertChild(1, lnode);
+		inode1.insertChild(2, lnode);
+		inode2.insertChild(3, lnode);
+		inode2.insertChild(4, lnode);
+		inode2.insertChild(5, lnode);
+		Assert.assertEquals(inode1.isOverflow(), false);
+		Assert.assertEquals(inode2.isOverflow(), false);
+
+		inode1.merge(inode2);
+		Assert.assertEquals(inode1.isOverflow(), true);
+		Assert.assertEquals(inode1.children.size(), 7);
+	}
+
+	@Test
+	public void testInternalNodeSplit() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+
+		inode.insertChild(1, lnode);
+		inode.insertChild(2, lnode);
+		inode.insertChild(3, lnode);
+		inode.insertChild(4, lnode);
+		Assert.assertEquals(inode.isOverflow(), true);
+
+		BPlusTree.Node slibing = inode.split();
+		Assert.assertEquals(slibing.keys.size(), 1);
+	}
+
+	@Test
+	public void testInternalNodeIsOverflow() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+
+		inode.insertChild(1, lnode);
+		inode.insertChild(2, lnode);
+		Assert.assertEquals(inode.isOverflow(), false);
+	}
+
+	@Test
+	public void testInternalNodeIsOverflow2() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+
+		inode.insertChild(1, lnode);
+		inode.insertChild(2, lnode);
+		inode.insertChild(3, lnode);
+		inode.insertChild(4, lnode);
+		Assert.assertEquals(inode.isOverflow(), true);
+	}
+
+	@Test
+	public void testInternalNodeIsUnderflow() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+
+		inode.insertChild(1, lnode);
+		Assert.assertEquals(inode.isUnderflow(), false);
+	}
+
+	@Test
+	public void testInternalNodeIsUnderflow2() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+
+		Assert.assertEquals(inode.isUnderflow(), true);
+	}
+
+	@Test
+	public void testInternalNodeGetChild() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+
+		inode.insertChild(1, lnode);
+		Assert.assertNotNull(inode.getChild(1));
+		Assert.assertEquals(inode.getChild(1), lnode);
+	}
+
+	@Test
+	public void testInternalNodeDeleteChild() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+
+		inode.insertChild(1, lnode);
+		inode.insertChild(2, lnode);
+		inode.insertChild(3, lnode);
+		inode.insertChild(4, lnode);
+		Assert.assertEquals(inode.children.size(), 5);
+		inode.deleteChild(4);
+		Assert.assertEquals(inode.children.size(), 4);
+
+	}
+
+	@Test
+	public void testInternalNodeDeleteChild2() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+
+		inode.insertChild(1, lnode);
+		inode.insertChild(2, lnode);
+
+		inode.deleteChild(0);
+		Assert.assertEquals(inode.children.size(), 3);
+	}
+
+	@Test
+	public void testInternalNodeInsertChild() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+
+		inode.insertChild(1, lnode);
+		Assert.assertNotNull(inode.getChild(1));
+		Assert.assertEquals(inode.getChild(1), lnode);
+	}
+
+	@Test
+	public void testInternalNodeInsertChild2() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		BPlusTree.LeafNode lnode1 = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+
+		inode.insertChild(1, lnode);
+		inode.insertChild(1, lnode1);
+		Assert.assertEquals(inode.getChild(1), lnode1);
+		Assert.assertNotEquals(inode.getChild(1), lnode);
+
+	}
+
+	@Test
+	public void testInternalNodeGetChildLeftSibling() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode1 = new BPlusTree<Integer, String>(4).new LeafNode();
+		BPlusTree.LeafNode lnode2 = new BPlusTree<Integer, String>(4).new LeafNode();
+
+		lnode1.keys.add(0);
+		lnode2.keys.add(4);
+		inode.children.add(lnode1);
+		inode.insertChild(4, lnode2);
+
+		Assert.assertEquals(inode.getChildLeftSibling(4), lnode1);
+	}
+
+	@Test
+	public void testInternalNodeGetChildLeftSibling2() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode1 = new BPlusTree<Integer, String>(4).new LeafNode();
+		BPlusTree.LeafNode lnode2 = new BPlusTree<Integer, String>(4).new LeafNode();
+
+		inode.children.add(lnode1);
+		inode.insertChild(4, lnode2);
+
+		Assert.assertNull(inode.getChildLeftSibling(0));
+	}
+
+	@Test
+	public void testInternalNodeGetChildRightSibling() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+		inode.insertChild(1, lnode);
+		inode.insertChild(2, lnode);
+		Assert.assertEquals(inode.getChildRightSibling(1), lnode);
+	}
+
+	@Test
+	public void testInternalNodeGetChildRightSibling2() {
+		BPlusTree.InternalNode inode = new BPlusTree<Integer, String>(4).new InternalNode();
+		BPlusTree.LeafNode lnode = new BPlusTree<Integer, String>(4).new LeafNode();
+		inode.children.add(lnode);
+		inode.insertChild(1, lnode);
+		Assert.assertNull(inode.getChildRightSibling(1));
+	}
 }
 
