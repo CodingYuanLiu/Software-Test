@@ -8,7 +8,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import sjtu.testing.webui.common.CommonOperation;
-import sjtu.testing.webui.common.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,14 +31,15 @@ public class AppTest
     }
     private static final Map<TIMEZONE, String> timezoneOptions = new HashMap<>();
     private static final Map<LOCALE, String> localeOptions = new HashMap<>();
-    private static final String username = "G245078728";
-    private static final String password = "SHOUXING?CRAZY";
+    private static final String username = "Your jaccount";
+    private static final String password = "Your password";
 
     private static FunctionalTester functionalTester;
 
     @BeforeClass
     public static void setup(){
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\ALIENWARE\\webdriver\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\lqyuan\\webdriver\\chromedriver.exe");
+
         System.setProperty("TESSDATA_PREFIX", ".");
         System.setProperty("SCREEN_ZOOM_RATIO", String.valueOf(1.25));
         System.setProperty("JACCOUNT_USERNAME", username);
@@ -63,7 +63,7 @@ public class AppTest
     public void testCreateEvent(){
         WebDriver driver = new ChromeDriver();
         functionalTester.createEvent(driver);
-    }
+        }
 
     @Test
     public void testCommitAssignment(){
