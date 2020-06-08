@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import org.openqa.selenium.*;
-import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -12,7 +11,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 @Slf4j
 public class CommonOperation {
@@ -39,7 +37,8 @@ public class CommonOperation {
 
         driver.get(loginUrl);
         jaccountLinkElement =  waitElement.until(
-                (ExpectedCondition<WebElement>) d -> d.findElement(By.id("jaccount")));
+                (ExpectedCondition<WebElement>) d ->
+                        d.findElement(By.cssSelector("a[href=\"/login/openid_connect\"]>:first-child")));
         // Navigate to sso
         jaccountLinkElement.click();
 
@@ -58,6 +57,9 @@ public class CommonOperation {
             rect = captchaImageElement.getRect();
             try {
                 screenshotImage = ImageIO.read(screenshotFile);
+                File saveScreenshotFile = new File("./screenshot.png");
+                saveScreenshotFile.createNewFile();
+                ImageIO.write(screenshotImage, "png", saveScreenshotFile);
                 captchaScreenshotImage = screenshotImage.getSubimage(
                         (int) (rect.getX() * screenZoomRatio),
                         (int) (rect.getY() * screenZoomRatio),
@@ -66,7 +68,7 @@ public class CommonOperation {
 
                 // if debug enabled, save screenshot image & cropped captcha image
                 if(debug) {
-                    File saveScreenshotFile = new File("./screenshot.png");
+                    saveScreenshotFile = new File("./screenshot.png");
                     saveScreenshotFile.createNewFile();
                     ImageIO.write(screenshotImage, "png", saveScreenshotFile);
                     File saveCaptchaFile = new File("./captcha.png");

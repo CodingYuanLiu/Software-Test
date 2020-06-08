@@ -1,13 +1,9 @@
 package sjtu.testing.webui;
 
 import lombok.extern.slf4j.Slf4j;
-import net.sourceforge.tess4j.TessAPI;
-import net.sourceforge.tess4j.Tesseract;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -18,58 +14,22 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Hello world!
- *
- */
 @Slf4j
-public class App {
+public class FunctionalTester {
     private final static String UPLOAD_FILE = "upload.zip";
-    private enum TIMEZONE {
-        TOKYO,
-        PEKING
-    }
-    private enum LOCALE {
-        ENGLISH,
-        CHINESE
-    }
-    private static final Map<TIMEZONE, String> timezoneOptions = new HashMap<>();
-    private static final Map<LOCALE, String> localeOptions = new HashMap<>();
-    private static final String username = "";
-    private static final String password = "";
+    private static String username;
+    private static String password;
 
-    public static void main( String[] args ) {
-        WebDriver driver;
-
-        setup();
-        /*
-        driver = new ChromeDriver();
-        testCommitAssignment(driver);
-
-        driver = new ChromeDriver();
-        testProfileSetting(driver, localeOptions.get(LOCALE.CHINESE),
-                timezoneOptions.get(TIMEZONE.PEKING), false);
-        driver = new ChromeDriver();
-        testDownloadFile(driver);
-         */
-        driver = new ChromeDriver();
-        testCreateEvent(driver);
+    public FunctionalTester() {
+        username = System.getProperty("JACCOUNT_USERNAME");
+        password = System.getProperty("JACCOUNT_PASSWORD");
+        if (username == null || password == null) {
+            log.error("Username or Password not set, you may need to set JACCOUNT_USERNAME or JACCOUNT_PASSWORD before using {}", this.getClass());
+            System.exit(1);
+        }
     }
 
-    public static void setup() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\lqyua\\webdriver\\chromedriver.exe");
-        System.setProperty("TESSDATA_PREFIX", ".");
-        System.setProperty("SCREEN_ZOOM_RATIO", String.valueOf(1.25));
-        CommonOperation.debug = true;
-
-        timezoneOptions.put(TIMEZONE.TOKYO, "Tokyo");
-        timezoneOptions.put(TIMEZONE.PEKING, "Beijing");
-
-        localeOptions.put(LOCALE.CHINESE, "zh-Hans");
-        localeOptions.put(LOCALE.ENGLISH, "en");
-    }
-
-    private static void testCommitAssignment(WebDriver driver) {
+    public void commitAssignment(WebDriver driver) {
         WebDriverWait waitElement = new WebDriverWait(driver, 10);
         WebElement courseSvgElement, caLinkElement, assignmentListLinkElement,
                 assignmentLinkElement, commitButtonElement, uploadElement, submitButton;
@@ -108,14 +68,15 @@ public class App {
         log.info("Success uploaded file {}", UPLOAD_FILE);
 
         submitButton = driver.findElement(By.id("submit_file_button"));
+        Utils.wait(500);
         submitButton.click();
         log.info("Success submitted file {}", UPLOAD_FILE);
 
-        Utils.wait(10000);
+        Utils.wait(5000);
         driver.quit();
     }
 
-    private static void testProfileSetting(WebDriver driver, String locale, String timezone, boolean subscribeEnabled) {
+    public void profileSetting(WebDriver driver, String locale, String timezone, boolean subscribeEnabled) {
         WebDriverWait waitElement = new WebDriverWait(driver, 10);
         WebElement profileSvgElement, settingLinkElement, editButtonElement,
                 subscribeCheckbox, submitButton;
@@ -152,7 +113,7 @@ public class App {
         subscribeCheckbox = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.id("user_subscribe_to_emails")));
         if (subscribeCheckbox.isSelected() && !subscribeEnabled ||
-            !subscribeCheckbox.isSelected() && subscribeEnabled) {
+                !subscribeCheckbox.isSelected() && subscribeEnabled) {
             subscribeCheckbox.click();
         }
         log.info("Subscribe checkbox has been set to {}", subscribeEnabled);
@@ -161,11 +122,11 @@ public class App {
         submitButton.click();
         log.info("Clicked submit button, success configured user settings");
 
-        Utils.wait(10000);
+        Utils.wait(5000);
         driver.quit();
     }
 
-    private static void testDownloadFile(WebDriver driver){
+    public void downloadFile(WebDriver driver){
         WebDriverWait waitElement = new WebDriverWait(driver, 15);
         WebElement courseSvgElement, caLinkElement, assignmentListLinkElement, assignmentLinkElement, assignmentFileElement;
 
@@ -195,11 +156,11 @@ public class App {
 
         log.info("Test download file successfully");
 
-        Utils.wait(10000);
+        Utils.wait(5000);
         driver.quit();
     }
 
-    private static void testCreateEvent(WebDriver driver){
+    public void createEvent(WebDriver driver){
         WebDriverWait waitElement = new WebDriverWait(driver, 15);
         WebElement calendarElement, createElementButtonElement, eventTitleElement, eventLocationElement,
                 eventFromTimeElement, eventToTimeElement, submitButtonElement;
@@ -251,7 +212,7 @@ public class App {
 
         eventToTimeElement.submit();
 
-        Utils.wait(10000);
+        Utils.wait(5000);
         driver.close();
     }
 }
