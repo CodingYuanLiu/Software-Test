@@ -35,24 +35,29 @@ public class App {
     }
     private static final Map<TIMEZONE, String> timezoneOptions = new HashMap<>();
     private static final Map<LOCALE, String> localeOptions = new HashMap<>();
-    private static final String username = "G245078728";
-    private static final String password = "SHOUXING?CRAZY";
+    private static final String username = "";
+    private static final String password = "";
 
     public static void main( String[] args ) {
         WebDriver driver;
 
         setup();
-
+        /*
         driver = new ChromeDriver();
         testCommitAssignment(driver);
 
         driver = new ChromeDriver();
         testProfileSetting(driver, localeOptions.get(LOCALE.CHINESE),
                 timezoneOptions.get(TIMEZONE.PEKING), false);
+        driver = new ChromeDriver();
+        testDownloadFile(driver);
+         */
+        driver = new ChromeDriver();
+        testCreateEvent(driver);
     }
 
-    private static void setup() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\ALIENWARE\\webdriver\\chromedriver.exe");
+    public static void setup() {
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\lqyua\\webdriver\\chromedriver.exe");
         System.setProperty("TESSDATA_PREFIX", ".");
         System.setProperty("SCREEN_ZOOM_RATIO", String.valueOf(1.25));
         CommonOperation.debug = true;
@@ -78,7 +83,7 @@ public class App {
         courseSvgElement.click();
 
         caLinkElement = waitElement.until(
-                (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("span[data-reactid*=\"$17679\"]")));
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("span[data-reactid*=\"$17679.0:0.0.0.1\"]")));
         Utils.wait(500);
         caLinkElement.click();
 
@@ -158,5 +163,95 @@ public class App {
 
         Utils.wait(10000);
         driver.quit();
+    }
+
+    private static void testDownloadFile(WebDriver driver){
+        WebDriverWait waitElement = new WebDriverWait(driver, 15);
+        WebElement courseSvgElement, caLinkElement, assignmentListLinkElement, assignmentLinkElement, assignmentFileElement;
+
+        CommonOperation.login(driver, username, password);
+
+        log.info("Running test download file module");
+        courseSvgElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.id("global_nav_courses_link")));
+        courseSvgElement.click();
+
+        caLinkElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("span[data-reactid*=\"$17679.0:0.0.0.1\"]")));
+        Utils.wait(500);
+        caLinkElement.click();
+
+        assignmentListLinkElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("a[href=\"/courses/17679/assignments\"]")));
+        Utils.wait(500);
+        assignmentListLinkElement.click();
+
+        assignmentLinkElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("a[href=\"https://oc.sjtu.edu.cn/courses/17679/assignments/36947\"]")));
+        assignmentLinkElement.click();
+        assignmentFileElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("a[href*=\"/courses/17679/files/853844/download?\"]")));
+        assignmentFileElement.click();
+
+        log.info("Test download file successfully");
+
+        Utils.wait(10000);
+        driver.quit();
+    }
+
+    private static void testCreateEvent(WebDriver driver){
+        WebDriverWait waitElement = new WebDriverWait(driver, 15);
+        WebElement calendarElement, createElementButtonElement, eventTitleElement, eventLocationElement,
+                eventFromTimeElement, eventToTimeElement, submitButtonElement;
+        CommonOperation.login(driver, username, password);
+
+        log.info("Running test create event on the calendar");
+        calendarElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.id("global_nav_calendar_link")));
+        calendarElement.click();
+
+        createElementButtonElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.id("create_new_event_link")));
+        Utils.wait(1000);
+        createElementButtonElement.click();
+
+        eventTitleElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.id("calendar_event_title")));
+        eventTitleElement.sendKeys("Test title");
+        Utils.wait(500);
+        log.info(eventTitleElement.getAttribute("value"));
+        eventTitleElement.clear();
+        eventTitleElement.sendKeys("Set title successfully");
+
+        eventLocationElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.id("calendar_event_location_name")));
+        eventLocationElement.sendKeys("Test input location");
+        Utils.wait(500);
+        log.info(eventLocationElement.getAttribute("value"));
+        eventTitleElement.clear();
+        eventTitleElement.sendKeys("Set location successfully");
+
+        eventFromTimeElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.id("calendar_event_start_time")));
+        log.info(eventFromTimeElement.getAttribute("value"));
+        eventFromTimeElement.clear();
+        eventFromTimeElement.sendKeys("12:00");
+
+        eventToTimeElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.id("calendar_event_end_time")));
+        log.info(eventToTimeElement.getAttribute("value"));
+        eventToTimeElement.clear();
+        eventToTimeElement.sendKeys("16:00");
+        /*
+        submitButtonElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("event_button btn btn-primary")));
+        */
+        //submitButtonElement.click();
+
+
+        eventToTimeElement.submit();
+
+        Utils.wait(10000);
+        driver.close();
     }
 }
