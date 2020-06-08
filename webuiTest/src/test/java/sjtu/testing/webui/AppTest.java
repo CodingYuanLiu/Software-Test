@@ -17,6 +17,7 @@ import sjtu.testing.webui.common.CommonOperation;
 import sjtu.testing.webui.common.Utils;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +42,7 @@ public class AppTest
     private static final Map<TIMEZONE, String> timezoneOptions = new HashMap<>();
     private static final Map<LOCALE, String> localeOptions = new HashMap<>();
     private static final String username = "LQY's Jaccount";
-    private static final String password = "LQY's Jaccound password";
+    private static final String password = "LQY's Jaccount password";
     private static final String driverPath = "C:\\Users\\lqyua\\webdriver\\chromedriver.exe";//Your web driver file path
 
     @BeforeClass
@@ -65,25 +66,39 @@ public class AppTest
         WebElement courseSvgElement, caLinkElement, assignmentListLinkElement, assignmentLinkElement, assignmentFileElement;
 
         CommonOperation.login(driver, username, password);
-
         log.info("Running test download file module");
+
+        long startTime = Utils.GetTime();
         courseSvgElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.id("global_nav_courses_link")));
+        long endTime = Utils.GetTime();
+        log.info("Main page load time (ms): " + String.valueOf(endTime - startTime));
         courseSvgElement.click();
 
+        startTime = Utils.GetTime();
         caLinkElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("span[data-reactid*=\"$17679.0:0.0.0.1\"]")));
+        endTime = Utils.GetTime();
+        log.info("Course main page load time (ms): " + String.valueOf(endTime - startTime));
         Utils.wait(500);
+
         caLinkElement.click();
 
+        startTime = Utils.GetTime();
         assignmentListLinkElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("a[href=\"/courses/17679/assignments\"]")));
+        endTime = Utils.GetTime();
+        log.info("Assignment list page load time (ms): " + String.valueOf(endTime - startTime));
         Utils.wait(500);
         assignmentListLinkElement.click();
 
+        startTime = Utils.GetTime();
         assignmentLinkElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("a[href=\"https://oc.sjtu.edu.cn/courses/17679/assignments/36947\"]")));
+        endTime = Utils.GetTime();
+        log.info("Assignment page load time (ms): " + String.valueOf(endTime - startTime));
         assignmentLinkElement.click();
+
         assignmentFileElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("a[href*=\"/courses/17679/files/853844/download?\"]")));
         assignmentFileElement.click();
@@ -102,12 +117,18 @@ public class AppTest
         CommonOperation.login(driver, username, password);
 
         log.info("Running test create event on the calendar");
+        long startTime = Utils.GetTime();
         calendarElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.id("global_nav_calendar_link")));
-        calendarElement.click();
+        long endTime = Utils.GetTime();
+        log.info("Main page load time (ms): " + String.valueOf(endTime - startTime));
 
+        calendarElement.click();
+        startTime = Utils.GetTime();
         createElementButtonElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.id("create_new_event_link")));
+        endTime = Utils.GetTime();
+        log.info("Calendar page load time (ms): " + String.valueOf(endTime - startTime));
         Utils.wait(1000);
         createElementButtonElement.click();
 
@@ -158,26 +179,39 @@ public class AppTest
         log.info("The homework ddl is 2020/6/18. Test it before ddl!");
         CommonOperation.login(driver, username, password);
 
+        long startTime = Utils.GetTime();
         courseSvgElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.id("global_nav_courses_link")));
+        long endTime = Utils.GetTime();
+        log.info("Main page load time (ms): " + String.valueOf(endTime - startTime));
         courseSvgElement.click();
 
         caLinkElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("span[data-reactid*=\"$17679.0:0.0.0.1\"]")));
+
         Utils.wait(500);
         caLinkElement.click();
 
+        startTime = Utils.GetTime();
         assignmentListLinkElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("a[href=\"/courses/17679/assignments\"]")));
+        endTime = Utils.GetTime();
+        log.info("Course main page load time (ms): " + String.valueOf(endTime - startTime));
         Utils.wait(500);
         assignmentListLinkElement.click();
 
+        startTime = Utils.GetTime();
         assignmentLinkElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("a[href=\"https://oc.sjtu.edu.cn/courses/17679/assignments/36947\"]")));
+        endTime = Utils.GetTime();
+        log.info("Assignment list page load time (ms): " + String.valueOf(endTime - startTime));
         assignmentLinkElement.click();
 
+        startTime = Utils.GetTime();
         commitButtonElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("div.assignment-buttons")));
+        endTime = Utils.GetTime();
+        log.info("Assignment page load time (ms): " + String.valueOf(endTime - startTime));
         commitButtonElement.click();
 
         uploadElement = waitElement.until(
@@ -210,17 +244,24 @@ public class AppTest
         log.info("Running settings module ...");
         CommonOperation.login(driver, username, password);
 
+        long startTime = Utils.GetTime();
         profileSvgElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.id("global_nav_profile_link")));
+        long endTime = Utils.GetTime();
+        log.info("Main page load time (ms): " + String.valueOf(endTime - startTime));
         profileSvgElement.click();
+
 
         settingLinkElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("li[data-reactid*=\"$settings\"] span")));
         Utils.wait(500);
         settingLinkElement.click();
 
+        startTime = Utils.GetTime();
         editButtonElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector(".edit_settings_link")));
+        endTime = Utils.GetTime();
+        log.info("Profile page load time (ms): " + String.valueOf(endTime - startTime));
         Utils.wait(500);
         editButtonElement.click();
 
