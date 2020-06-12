@@ -167,7 +167,7 @@ public class FunctionalTester {
         Utils.wait(500);
 
         caLinkElement.click();
-
+        Utils.wait(500);
         startTime = Utils.GetTime();
         assignmentListLinkElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("a[href=\"/courses/17679/assignments\"]")));
@@ -190,7 +190,8 @@ public class FunctionalTester {
         log.info("Test download file successfully");
 
         Utils.wait(5000);
-        driver.quit();
+        driver.close();
+
     }
 
     public void createEvent(WebDriver driver){

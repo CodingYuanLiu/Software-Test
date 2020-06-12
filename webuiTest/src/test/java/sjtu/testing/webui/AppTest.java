@@ -7,6 +7,9 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import sjtu.testing.webui.common.CommonOperation;
 
 import java.util.HashMap;
@@ -31,20 +34,25 @@ public class AppTest
     }
     private static final Map<TIMEZONE, String> timezoneOptions = new HashMap<>();
     private static final Map<LOCALE, String> localeOptions = new HashMap<>();
-    private static final String username = "Your jaccount";
-    private static final String password = "Your password";
+    private static final String username = "YOUR Jaccount";
+    private static final String password = "Your Password";
 
     private static FunctionalTester functionalTester;
 
     @BeforeClass
     public static void setup(){
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\lqyuan\\webdriver\\chromedriver.exe");
+
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\ALIENWARE\\webdriver\\chromedriver.exe");
+
+        System.setProperty("webdriver.gecko.driver", "C:\\Users\\ALIENWARE\\webdriver\\geckodriver.exe");
+        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+        capabilities.setCapability("marionette", true);
 
         System.setProperty("TESSDATA_PREFIX", ".");
         System.setProperty("SCREEN_ZOOM_RATIO", String.valueOf(1.25));
         System.setProperty("JACCOUNT_USERNAME", username);
         System.setProperty("JACCOUNT_PASSWORD", password);
-        CommonOperation.debug = true;
+        CommonOperation.debug = false;
 
         timezoneOptions.put(TIMEZONE.TOKYO, "Tokyo");
         timezoneOptions.put(TIMEZONE.PEKING, "Beijing");
@@ -118,5 +126,19 @@ public class AppTest
         driver = new ChromeDriver();
         driver.manage().window().setSize(new Dimension(1027, 768));
         functionalTester.downloadFile(driver);
+    }
+
+    @Test
+    public void testDrivers() {
+        WebDriver driver;
+        driver = new ChromeDriver();
+        functionalTester.downloadFile(driver);
+
+        driver = new FirefoxDriver();
+        functionalTester.downloadFile(driver);
+
+        driver = new EdgeDriver();
+        functionalTester.downloadFile(driver);
+
     }
 }

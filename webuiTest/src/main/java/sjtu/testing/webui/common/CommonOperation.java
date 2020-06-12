@@ -22,7 +22,7 @@ public class CommonOperation {
         double screenZoomRatio = Double.parseDouble(System.getProperty("SCREEN_ZOOM_RATIO"));
         WebDriverWait waitElement = new WebDriverWait(driver, 10);
         WebElement jaccountLinkElement, usernameInputElement, passwordInputElement,
-                captchaImageElement, captchaInputElement;
+                captchaImageElement, captchaInputElement, submitElement;
 
         File screenshotFile;
         BufferedImage screenshotImage, captchaScreenshotImage;
@@ -43,10 +43,14 @@ public class CommonOperation {
         jaccountLinkElement.click();
 
         while (!loginCompleted) {
+
             usernameInputElement = waitElement.until(
                     (ExpectedCondition<WebElement>) d -> d.findElement(By.id("user")));
             passwordInputElement = driver.findElement(By.id("pass"));
+
+            usernameInputElement.clear();
             usernameInputElement.sendKeys(username);
+            passwordInputElement.clear();
             passwordInputElement.sendKeys(password);
 
             // Start read captcha code
@@ -82,8 +86,15 @@ public class CommonOperation {
                         .replaceAll(" ", "")
                         .replaceAll("I", "l");
                 log.info("Recognized captcha is {}", captchaCode);
+
+                submitElement = driver.findElement(By.id("submit-button"));
                 captchaInputElement.sendKeys(captchaCode);
-                Utils.wait(1000);
+                try{
+                    submitElement.click();
+                } catch (StaleElementReferenceException e) {
+                    log.warn("Submit button is not attached to the page document, it should only happen on chrome driver");
+                }
+                Utils.wait(2000);
                 loginCompleted = !driver.getCurrentUrl().startsWith("https://jaccount.sjtu.edu.cn");
                 if (!loginCompleted) {
                     log.info("Recognized captcha is incorrect, try again");
