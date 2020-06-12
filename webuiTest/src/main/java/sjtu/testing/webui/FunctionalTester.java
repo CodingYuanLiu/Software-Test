@@ -165,9 +165,11 @@ public class FunctionalTester {
         endTime = Utils.GetTime();
         log.info("Course main page load time (ms): " + String.valueOf(endTime - startTime));
         Utils.wait(500);
-
         caLinkElement.click();
+
+        // if comment the code below, test on Edge may throw exception
         Utils.wait(500);
+
         startTime = Utils.GetTime();
         assignmentListLinkElement = waitElement.until(
                 (ExpectedCondition<WebElement>) d -> d.findElement(By.cssSelector("a[href=\"/courses/17679/assignments\"]")));

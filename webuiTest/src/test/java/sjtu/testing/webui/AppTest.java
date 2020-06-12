@@ -34,8 +34,8 @@ public class AppTest
     }
     private static final Map<TIMEZONE, String> timezoneOptions = new HashMap<>();
     private static final Map<LOCALE, String> localeOptions = new HashMap<>();
-    private static final String username = "YOUR Jaccount";
-    private static final String password = "Your Password";
+    private static final String username = "G245078728";
+    private static final String password = "SHOUXING?CRAZY";
 
     private static FunctionalTester functionalTester;
 
