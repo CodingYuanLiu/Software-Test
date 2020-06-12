@@ -199,7 +199,7 @@ public class FunctionalTester {
     public void createEvent(WebDriver driver){
         WebDriverWait waitElement = new WebDriverWait(driver, 15);
         WebElement calendarElement, createElementButtonElement, eventTitleElement, eventLocationElement,
-                eventFromTimeElement, eventToTimeElement, submitButtonElement;
+                eventFromTimeElement, eventToTimeElement, calendarEventContextElement;
         CommonOperation.login(driver, username, password);
 
         log.info("Running test create event on the calendar");
@@ -247,10 +247,16 @@ public class FunctionalTester {
         eventToTimeElement.clear();
         eventToTimeElement.sendKeys("16:00");
 
-
+        calendarEventContextElement = waitElement.until(
+                (ExpectedCondition<WebElement>) d -> d.findElement(By.id("calendar_event_context")));
+        Select contextSelect = new Select(calendarEventContextElement);
+        contextSelect.selectByIndex(1);
+        Utils.wait(3000);
+        contextSelect.selectByIndex(0);
+        Utils.wait(3000);
         eventToTimeElement.submit();
 
-        Utils.wait(10000);
+        Utils.wait(5000);
         driver.close();
     }
 }

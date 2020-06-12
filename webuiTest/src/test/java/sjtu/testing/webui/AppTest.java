@@ -42,9 +42,9 @@ public class AppTest
     @BeforeClass
     public static void setup(){
 
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\ALIENWARE\\webdriver\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\lqyuag\\webdriver\\chromedriver.exe");
 
-        System.setProperty("webdriver.gecko.driver", "C:\\Users\\ALIENWARE\\webdriver\\geckodriver.exe");
+        System.setProperty("webdriver.gecko.driver", "C:\\Users\\lqyua\\webdriver\\geckodriver.exe");
         DesiredCapabilities capabilities = DesiredCapabilities.firefox();
         capabilities.setCapability("marionette", true);
 
