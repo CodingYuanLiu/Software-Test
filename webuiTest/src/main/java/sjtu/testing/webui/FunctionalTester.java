@@ -4,6 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -11,6 +14,7 @@ import sjtu.testing.webui.common.CommonOperation;
 import sjtu.testing.webui.common.Utils;
 
 import java.io.File;
+import java.util.Set;
 
 
 @Slf4j
@@ -258,5 +262,32 @@ public class FunctionalTester {
 
         Utils.wait(5000);
         driver.close();
+    }
+
+    public String testCookie(WebDriver driver) {
+        CommonOperation.login(driver, username, password);
+        driver.manage().deleteCookieNamed("_normandy_session");
+        driver.navigate().refresh();
+        Utils.wait(3000);
+        return driver.getCurrentUrl();
+    }
+
+    public boolean testCookie2(WebDriver driver) {
+        CommonOperation.login(driver, username, password);
+        Utils.wait(3000);
+        driver.findElement(By.xpath("//*[@id=\"menu\"]/li[5]")).click();
+        Utils.wait(500);
+        driver.findElement(By.xpath("//*[@id=\"calendar-app\"]/div[4]/div/div/table/tbody/tr/td/div/div/div[4]/div[1]/table/tbody/tr/td[2]")).click();
+        driver.manage().deleteCookieNamed("_normandy_session");
+        driver.findElement(By.xpath("//*[@id=\"edit_calendar_event_form\"]/div[2]/button")).click();
+        Utils.wait(3000);
+        LogEntries les = driver.manage().logs().get(LogType.PERFORMANCE);
+        for (LogEntry le : les) {
+            // Delete cookie when send requests
+            if (le.toString().contains("https://oc.sjtu.edu.cn/api/v1/calendar_events") && le.toString().contains("\"Status\":\"401 Unauthorized\"")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
